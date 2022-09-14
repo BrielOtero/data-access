@@ -14,10 +14,13 @@ public class Exercise6 {
 			int fileIndex = 0;
 			int contChar = 0;
 
-			while ((i = fr.read()) != -1) {
+			String extension = in.getPath().substring(in.getPath().lastIndexOf("."),in.getPath().length());
+			System.out.println(extension);
 
-				try (FileWriter fw = new FileWriter(new File(in.getPath().replace(".txt", "-" + fileIndex + ".txt")),
-						true)) {
+			try (FileWriter fw = new FileWriter(new File(in.getPath().replace(extension, "-" + fileIndex + extension)),
+					true)) {
+
+				while ((i = fr.read()) != -1) {
 
 					fw.append((char) i);
 					contChar++;
@@ -27,8 +30,9 @@ public class Exercise6 {
 						contChar = 0;
 					}
 
-				} catch (IOException e) {
 				}
+
+			} catch (IOException e) {
 			}
 
 		} catch (IOException e) {
@@ -87,18 +91,18 @@ public class Exercise6 {
 
 	public static void main(String[] args) {
 		// File file = new File("C:\\Users\\Gabriel\\Downloads\\Fich.txt");
-		File file = new File("C:\\Users\\ID\\Downloads\\Fich.txt");
+		File file = new File("C:\\Users\\Gabriel\\Downloads\\Fich.txt");
 
-		File file1 = new File("C:\\Users\\ID\\Downloads\\Fich-0.txt");
-		File file2 = new File("C:\\Users\\ID\\Downloads\\Fich-1.txt");
-		File file3 = new File("C:\\Users\\ID\\Downloads\\Fich-2.txt");
+		File file1 = new File("C:\\Users\\Gabriel\\Downloads\\Fich-0.txt");
+		File file2 = new File("C:\\Users\\Gabriel\\Downloads\\Fich-1.txt");
+		File file3 = new File("C:\\Users\\Gabriel\\Downloads\\Fich-2.txt");
 
-		File file4Out = new File("C:\\Users\\ID\\Downloads\\Fich-Out.txt");
+		File file4Out = new File("C:\\Users\\Gabriel\\Downloads\\Fich-Out.txt");
 
 		File[] files = { file1, file2, file3 };
 
 		splitByChars(file, 1);
-		splitByLines(file, 2);
-		mergeFiles(files, file4Out);
+		// splitByLines(file, 2);
+		// mergeFiles(files, file4Out);
 	}
 }

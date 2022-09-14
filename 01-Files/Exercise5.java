@@ -9,13 +9,13 @@ public class Exercise5 {
 
 		if (f.exists() && f.isFile() && f.canRead()) {
 			try (Scanner s = new Scanner(f)) {
-
+				String data;
 				int lineCont=0;
 
 				while (s.hasNextLine()) {
 					lineCont++;
 
-					String data = s.nextLine();
+					 data = s.nextLine();
 				
 
 					if (data.contains(value)) {
