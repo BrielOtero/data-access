@@ -22,20 +22,20 @@ public class Exercise7 {
 					break;
 				case "A":
 
-					sortLinesSensitive(f,true);
+					sortLinesSensitive(f, true, true);
 
 					break;
 				case "D":
-				sortLinesSensitive(f,false);
-
+					sortLinesSensitive(f, false, true);
 
 					break;
-
 				case "a":
+					sortLinesSensitive(f, true, false);
 
 					break;
 
 				case "d":
+					sortLinesSensitive(f, false, false);
 
 					break;
 			}
@@ -43,28 +43,32 @@ public class Exercise7 {
 
 	}
 
-	private static void sortLinesSensitive(File f, boolean isAscent) {
+	private static void sortLinesSensitive(File f, boolean isAscent, boolean isSensitive) {
 		ArrayList<String> sentences = new ArrayList<>();
 
 		try (Scanner s = new Scanner(f)) {
 
 			while (s.hasNextLine()) {
-				sentences.add(s.nextLine()+"\n");
+				sentences.add(s.nextLine() + "\n");
 			}
 
 		} catch (Exception e) {
 		}
 
-		Collections.sort(sentences);
+		if (isSensitive) {
+			Collections.sort(sentences);
+		} else {
+			Collections.sort(sentences, String.CASE_INSENSITIVE_ORDER);
+		}
 
 		try (FileWriter fw = new FileWriter(new File(f.getPath().replace(".txt", "-copy.txt")))) {
 
-			if(isAscent){
+			if (isAscent) {
 
 				for (int i = 0; i < sentences.size(); i++) {
 					fw.write(sentences.get(i));
 				}
-			}else{
+			} else {
 				for (int i = sentences.size(); i >= 0; i--) {
 					fw.write(sentences.get(i));
 				}

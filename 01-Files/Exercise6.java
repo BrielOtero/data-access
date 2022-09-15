@@ -12,27 +12,19 @@ public class Exercise6 {
 
 			int i;
 			int fileIndex = 0;
-			int contChar = 0;
+			char[] buffer = new char[chars];
 
-			String extension = in.getPath().substring(in.getPath().lastIndexOf("."),in.getPath().length());
-			System.out.println(extension);
+			String extension = in.getPath().substring(in.getPath().lastIndexOf("."), in.getPath().length());
 
-			try (FileWriter fw = new FileWriter(new File(in.getPath().replace(extension, "-" + fileIndex + extension)),
-					true)) {
+			while ((i = fr.read(buffer)) != -1) {
 
-				while ((i = fr.read()) != -1) {
+				try (FileWriter fw = new FileWriter(
+						new File(in.getPath().replace(extension, "-" + fileIndex + extension)))) {
 
-					fw.append((char) i);
-					contChar++;
-
-					if (contChar == chars) {
-						fileIndex++;
-						contChar = 0;
-					}
+					fw.write(buffer, 0, buffer.length);
+					fileIndex++;
 
 				}
-
-			} catch (IOException e) {
 			}
 
 		} catch (IOException e) {
@@ -52,13 +44,18 @@ public class Exercise6 {
 				try (FileWriter fw = new FileWriter(new File(in.getPath().replace(".txt", "-" + fileIndex + ".txt")),
 						true)) {
 
-					fw.append(s.nextLine() + "\n");
-					contLines++;
+					// for (int i = 0; i < lines && s.hasNextLine(); i++) {
+					// fw.append(s.nextLine() + "\n");
+					// }
 
-					if (contLines == lines) {
-						fileIndex++;
-						contLines = 0;
+					while (s.hasNextLine() && contLines != lines) {
+						fw.append(s.nextLine() + "\n");
+						contLines++;
+
 					}
+
+					fileIndex++;
+					contLines = 0;
 
 				} catch (IOException e) {
 				}
@@ -71,21 +68,21 @@ public class Exercise6 {
 	}
 
 	static void mergeFiles(File[] in, File out) {
+		try (FileWriter fw = new FileWriter(out)) {
+			for (int i = 0; i < in.length; i++) {
 
-		for (int i = 0; i < in.length; i++) {
+				try (Scanner s = new Scanner(in[i])) {
+					while (s.hasNextLine()) {
 
-			try (Scanner s = new Scanner(in[i])) {
-				while (s.hasNextLine()) {
-
-					try (FileWriter fw = new FileWriter(out, true)) {
 						fw.append(s.nextLine() + "\n");
-					} catch (IOException e) {
+
 					}
+
+				} catch (IOException e) {
 				}
 
-			} catch (IOException e) {
 			}
-
+		} catch (IOException e) {
 		}
 	}
 
@@ -101,8 +98,8 @@ public class Exercise6 {
 
 		File[] files = { file1, file2, file3 };
 
-		splitByChars(file, 1);
+		// splitByChars(file, 1);
 		// splitByLines(file, 2);
-		// mergeFiles(files, file4Out);
+		mergeFiles(files, file4Out);
 	}
 }
