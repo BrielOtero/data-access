@@ -6,6 +6,7 @@ import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -18,7 +19,7 @@ public class Students {
 		File f = new File(path);
 		this.f = f;
 		students = new ArrayList<>();
-		read();
+		students = read();
 	}
 
 	private Student askValuesStudent() {
@@ -33,12 +34,14 @@ public class Students {
 	}
 
 	public void showStudents() {
+		this.students = read();
 
-		for (Student student : students) {
-			String.format("%4d.- %10s %f ", student.getCode(),student.getName(),student.getHeight())
-			
+		for (int i = 0; i < students.size(); i++) {
+			System.out.println(String.format("%4d.- %10s %f ", students.get(i).getCode(), students.get(i).getName(),
+					students.get(i).getHeight()));
+
 		}
-		
+
 	}
 
 	public void insertStudent() {
@@ -46,8 +49,9 @@ public class Students {
 		Student s = askValuesStudent();
 
 		if (!students.contains(s)) {
-			s.setCode(students.size() - 1);
+			s.setCode(students.size());
 			students.add(s);
+			save(s);
 		}
 	}
 
@@ -56,7 +60,12 @@ public class Students {
 
 			dos.writeInt(student.getCode());
 			dos.writeUTF(student.getName());
-			dos.writeDouble(student.getHeight());
+			dos.writeUTF(String.format("%f", student.getHeight()));
+
+			System.out.println("Insert");
+			System.out.println(student.getCode());
+			System.out.println(student.getName());
+			System.out.println(String.format("%f", student.getHeight()));
 
 		} catch (Exception e) {
 			System.out.println("Save Exception");
@@ -82,17 +91,35 @@ public class Students {
 	public ArrayList<Student> read() {
 		ArrayList<Student> readStudents = new ArrayList<>();
 		Student readStudent;
-		try (DataInputStream dis = new DataInputStream(new FileInputStream(f))) {
+		int code;
+		String name = "";
+		Double height;
+
+		try (DataInputStream dis = new DataInputStream(new FileInputStream(this.f))) {
+
 			try {
 				while (true) {
-					readStudent = new Student(dis.readInt(), dis.readUTF(), dis.readDouble());
-					readStudents.add(readStudent);
-				}
-			} catch (EOFException ex) {
-				System.out.println("EOFException");
-			}
+					code = dis.readInt();
+					name = dis.readUTF();
+					height = Double.parseDouble(dis.readUTF().replace(",", "."));
 
-		} catch (Exception e) {
+					// System.out.println(code);
+					// System.out.println(name);
+					// System.out.println(height);
+
+					if (!name.equals("")) {
+						readStudent = new Student(code, name, height);
+						readStudents.add(readStudent);
+					}
+				}
+
+			} catch (EOFException ex) {
+				System.out.println();
+				System.out.println("There aren't any student");
+				System.out.println();
+				return readStudents;
+			}
+		} catch (IOException e) {
 			System.out.println("Read exception");
 		}
 		return readStudents;
