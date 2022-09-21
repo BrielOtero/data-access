@@ -16,83 +16,144 @@ public class Students {
 	File f;
 
 	public Students(String path) {
-		File f = new File(path);
-		this.f = f;
-		students = new ArrayList<>();
-		students = read();
+		f = new File(path);
 	}
 
-	private Student askValuesStudent() {
+	private void clear() {
+		System.out.print("\033[H\033[2J");
+		System.out.flush();
+	}
+
+	public void menu() {
 		Scanner sc = new Scanner(System.in);
 
-		System.out.println("Insert name");
-		String name = sc.nextLine();
-		System.out.println("Insert height");
-		double height = sc.nextDouble();
+		Student student;
+		int indexMod;
+		int indexRem;
+		int maxIndex;
+		boolean error = false;
 
-		return new Student(0, name, height);
+		int menu;
+		do {
+			System.out.println();
+			System.out.println("Choose an option: ");
+			System.out.println();
+			System.out.println("1. Add Student");
+			System.out.println("2. See Students");
+			System.out.println("3. Change any student");
+			System.out.println("4. Delete Student");
+			System.out.println("5. Exit");
+			System.out.print("--> ");
+			menu = sc.nextInt();
+			sc.nextLine();
+			System.out.println();
+
+			switch (menu) {
+				case 1:
+					clear();
+
+					student = askValuesStudent();
+					writeNewStudent(student);
+
+					break;
+				case 2:
+					clear();
+
+					showStudents();
+
+					break;
+				case 3:
+
+					error = false;
+
+					do {
+						clear();
+
+						if (error) {
+							System.out.println();
+							System.out.println("This student don't exist, Please insert a valid student");
+							System.out.println();
+						}
+
+						showStudents();
+						maxIndex = getLastIndex() - 1;
+
+						System.out.println("Select the code for the student to modify: ");
+						indexMod = sc.nextInt();
+
+						if (indexMod > maxIndex) {
+							error = true;
+						} else {
+							error = false;
+						}
+
+					} while (indexMod > maxIndex);
+
+					System.out.println();
+					System.out.println("Insert the new Values");
+					System.out.println();
+					modifyStudent(indexMod, askValuesStudent());
+
+					break;
+				case 4:
+
+					error = false;
+
+					maxIndex = getLastIndex() - 1;
+
+					do {
+						clear();
+						if (error) {
+							System.out.println();
+							System.out.println("This student don't exist, Please insert a valid student");
+							System.out.println();
+						}
+
+						showStudents();
+
+						System.out.println("Select the code for the student to remove: ");
+						indexRem = sc.nextInt();
+
+						if (indexRem > maxIndex) {
+							error = true;
+						} else {
+							error = false;
+						}
+
+					} while (indexRem > maxIndex);
+					removeStudent(indexRem);
+
+					break;
+				case 5:
+					break;
+				default:
+					System.out.println();
+					System.out.println("+----------------+");
+					System.out.println("| Invalid option |");
+					System.out.println("+----------------+");
+					System.out.println();
+					break;
+			}
+		} while (menu != 5);
+		sc.close();
 	}
 
-	public void showStudents() {
-		this.students = read();
+	private boolean writeNewStudent(Student student) {
 
-		for (int i = 0; i < students.size(); i++) {
-			System.out.println(String.format("%4d.- %10s %f ", students.get(i).getCode(), students.get(i).getName(),
-					students.get(i).getHeight()));
-
-		}
-
-	}
-
-	public void insertStudent() {
-
-		Student s = askValuesStudent();
-
-		if (!students.contains(s)) {
-			s.setCode(students.size());
-			students.add(s);
-			save(s);
-		}
-	}
-
-	public void save(Student student) {
 		try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(f, true))) {
 
-			dos.writeInt(student.getCode());
+			dos.writeInt(getLastIndex());
 			dos.writeUTF(student.getName());
-			dos.writeUTF(String.format("%f", student.getHeight()));
-
-			System.out.println("Insert");
-			System.out.println(student.getCode());
-			System.out.println(student.getName());
-			System.out.println(String.format("%f", student.getHeight()));
-
+			dos.writeUTF(String.format("%.2f", student.getHeight()));
+			return true;
 		} catch (Exception e) {
-			System.out.println("Save Exception");
+			return false;
 		}
 	}
 
-	public void save(Student[] students) {
-
-		try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(f, false))) {
-
-			for (int i = 0; i < students.length; i++) {
-				dos.writeInt(students[i].getCode());
-				dos.writeUTF(students[i].getName());
-				dos.writeDouble(students[i].getHeight());
-			}
-
-		} catch (Exception e) {
-			System.out.println("Save Exception");
-		}
-
-	}
-
-	public ArrayList<Student> read() {
-		ArrayList<Student> readStudents = new ArrayList<>();
-		Student readStudent;
+	private void showStudents() {
 		int code;
-		String name = "";
+		String name;
 		Double height;
 
 		try (DataInputStream dis = new DataInputStream(new FileInputStream(this.f))) {
@@ -102,27 +163,136 @@ public class Students {
 					code = dis.readInt();
 					name = dis.readUTF();
 					height = Double.parseDouble(dis.readUTF().replace(",", "."));
-
-					// System.out.println(code);
-					// System.out.println(name);
-					// System.out.println(height);
-
-					if (!name.equals("")) {
-						readStudent = new Student(code, name, height);
-						readStudents.add(readStudent);
-					}
+					System.out.println(String.format("%4d.- %10s %.2f ", code, name, height));
 				}
 
 			} catch (EOFException ex) {
-				System.out.println();
-				System.out.println("There aren't any student");
-				System.out.println();
-				return readStudents;
 			}
-		} catch (IOException e) {
-			System.out.println("Read exception");
+	
+		} catch (Exception e) {
 		}
-		return readStudents;
+	}
+
+	private void modifyStudent(int codeStudent, Student newStudent) {
+		int code;
+		String name;
+		String height;
+		File temp = new File(this.f.getParent() + "\\temp.dat");
+		String fileNameWithPath = this.f.getAbsolutePath();
+
+		try (DataInputStream dis = new DataInputStream(new FileInputStream(this.f));
+				DataOutputStream dos = new DataOutputStream(new FileOutputStream(temp, true));) {
+
+			while (true) {
+				code = dis.readInt();
+				name = dis.readUTF();
+				height = dis.readUTF();
+
+				if (code == codeStudent) {
+
+					dos.writeInt(codeStudent);
+					dos.writeUTF(newStudent.getName());
+					dos.writeUTF(String.format("%.2f", newStudent.getHeight()));
+
+				} else {
+					dos.writeInt(code);
+					dos.writeUTF(name);
+					dos.writeUTF(height);
+				}
+			}
+
+		} catch (EOFException ex) {
+
+		} catch (IOException ex) {
+
+		}
+
+		f.delete();
+		temp.renameTo(new File(fileNameWithPath));
+
+		this.f = new File(fileNameWithPath);
+	}
+
+	private void removeStudent(int codeStudent) {
+		int code;
+		String name;
+		String height;
+		File temp = new File(this.f.getParent() + "\\temp.dat");
+		String fileNameWithPath = this.f.getAbsolutePath();
+
+		try (DataInputStream dis = new DataInputStream(new FileInputStream(this.f));
+				DataOutputStream dos = new DataOutputStream(new FileOutputStream(temp, true));) {
+
+			while (true) {
+				code = dis.readInt();
+				name = dis.readUTF();
+				height = dis.readUTF();
+
+				if (code != codeStudent) {
+
+					if (code > codeStudent) {
+						dos.writeInt(code - 1);
+					} else {
+						dos.writeInt(code);
+					}
+
+					dos.writeUTF(name);
+					dos.writeUTF(height);
+				}
+			}
+
+		} catch (EOFException ex) {
+
+		} catch (IOException ex) {
+
+		}
+
+		f.delete();
+		temp.renameTo(new File(fileNameWithPath));
+
+		this.f = new File(fileNameWithPath);
+	}
+
+	private int getLastIndex() {
+		int lastIndex = -1;
+		String name;
+		String height;
+
+		try (DataInputStream dis = new DataInputStream(new FileInputStream(this.f))) {
+			try {
+				while (true) {
+					lastIndex = dis.readInt();
+					name = dis.readUTF();
+					height = dis.readUTF();
+				}
+
+			} catch (EOFException ex) {
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		} catch (Exception e) {
+		}
+
+		if (lastIndex == -1) {
+			lastIndex = 0;
+		} else {
+			lastIndex++;
+		}
+
+		return lastIndex;
+	}
+
+	private static Student askValuesStudent() {
+		Scanner sc = new Scanner(System.in);
+
+		System.out.println("Insert name");
+		String name = sc.nextLine();
+		System.out.println("Insert height");
+		double height = sc.nextDouble();
+
+		return new Student(0, name, height);
 	}
 
 }
