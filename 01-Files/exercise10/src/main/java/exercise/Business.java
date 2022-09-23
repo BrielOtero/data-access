@@ -45,6 +45,10 @@ public class Business {
 		readObjects(false);
 	}
 
+	public void removeDepart(){
+		showDepart();
+	}
+
 	private String getName(String type) {
 		Scanner sc = new Scanner(System.in);
 
