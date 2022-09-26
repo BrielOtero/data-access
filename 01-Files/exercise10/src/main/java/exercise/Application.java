@@ -4,9 +4,15 @@ package exercise;
 import java.util.Scanner;
 
 public class Application {
+
+	private static void clear() {
+		System.out.print("\033[H\033[2J");
+		System.out.flush();
+	}
+
 	public static void main(String[] args) {
 
-		Business b = new Business("C:\\Users\\ID\\Downloads\\Objects.dat");
+		Business b = new Business("C:\\Users\\Gabriel\\Downloads\\Objects.dat");
 
 		Scanner sc = new Scanner(System.in);
 
@@ -25,6 +31,7 @@ public class Application {
 			System.out.print("--> ");
 			menu = sc.nextInt();
 			sc.nextLine();
+			clear();
 			switch (menu) {
 				case 1:
 					b.addPerson();
@@ -42,8 +49,10 @@ public class Application {
 					b.showAll();
 					break;
 				case 6:
+					removePerson(b, sc);
 					break;
 				case 7:
+					removeDepart(b, sc);
 					break;
 				case 8:
 					break;
@@ -57,5 +66,88 @@ public class Application {
 			}
 		} while (menu != 8);
 
+	}
+
+	private static void removeDepart(Business b, Scanner sc) {
+		int maxIndex = b.getLastIndex(true);
+		int indexToRem = 0;
+		boolean error = false;
+
+		if (maxIndex != 0) {
+
+			do {
+
+				b.showDepart();
+
+				if (error) {
+
+					System.out.println("Please select a valid number");
+				}
+
+				error = false;
+
+				System.out.println("Please select the id to delete");
+
+				try {
+					indexToRem = sc.nextInt();
+					sc.nextLine();
+
+				} catch (Exception e) {
+					error = true;
+					sc.nextLine();
+				}
+
+				if (indexToRem > maxIndex) {
+					error = true;
+				}
+
+			} while (error);
+
+			b.removeObject(indexToRem, true);
+		} else {
+			System.out.println("No Depart to show");
+		}
+	}
+
+	private static void removePerson(Business b, Scanner sc) {
+		int maxIndex = b.getLastIndex(true);
+		int indexToRem = 0;
+		boolean error = false;
+
+		if (maxIndex != 0) {
+
+			do {
+
+				b.showPerson();
+
+				if (error) {
+
+					System.out.println("Please select a valid number");
+				}
+
+				error = false;
+
+				System.out.println("Please select the id to delete");
+
+				try {
+					indexToRem = sc.nextInt();
+
+				} catch (Exception e) {
+					error = true;
+					sc.nextLine();
+				}
+
+				if (indexToRem > maxIndex) {
+					error = true;
+				}
+
+			} while (error);
+
+			b.removeObject(indexToRem, false);
+
+		} else {
+			System.out.println("No Person to show");
+
+		}
 	}
 }

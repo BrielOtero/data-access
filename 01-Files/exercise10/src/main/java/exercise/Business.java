@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Business {
@@ -19,17 +18,17 @@ public class Business {
 
 	public Business(String path) {
 		this.f = new File(path);
-		idPerson=getLastIndex(true);
-		idDepart=getLastIndex(false);
+		idPerson = getLastIndex(true);
+		idDepart = getLastIndex(false);
 	}
 
 	public void addDepart() {
-		saveObject(new Depart(getName("Depart"),idDepart));
+		saveObject(new Depart(getName("Depart"), idDepart));
 		idDepart++;
 	}
 
 	public void addPerson() {
-		saveObject(new Person(getName("Person"),idPerson));
+		saveObject(new Person(getName("Person"), idPerson));
 		idPerson++;
 	}
 
@@ -45,14 +44,66 @@ public class Business {
 		readObjects(false);
 	}
 
-	public void removeDepart(){
-		showDepart();
+	public void removeObject(int indexToRem, boolean isDepart) {
+		File temp = new File(this.f.getParent() + "\\temp.dat");
+		String fileNameWithPath = this.f.getAbsolutePath();
+
+		try (FileInputStream fin = new FileInputStream(f);
+				ObjectInputStream in = new ObjectInputStream(fin);
+				FileOutputStream dos = new FileOutputStream(temp, true);
+				ObjectOutputStream out = temp.length() == 0 ? new ObjectOutputStream(dos)
+						: new AppendingObjectOutputStream(dos)) {
+
+			try {
+
+				Depart readDepart;
+				Person readPerson;
+				Object readObject;
+
+				while (true) {
+					readObject = in.readObject();
+
+					if (readObject instanceof Depart) {
+						readDepart = (Depart) readObject;
+
+						if (readDepart.getId() == indexToRem && isDepart) {
+
+						} else {
+							out.writeObject(readObject);
+
+						}
+
+					} else if (readObject instanceof Person) {
+						readPerson = (Person) readObject;
+
+						if (readPerson.getId() == indexToRem && !isDepart) {
+
+						} else {
+
+							out.writeObject(readObject);
+						}
+
+					}
+
+				}
+			} catch (EOFException e) {
+			}
+
+
+		} catch (Exception e) {
+			System.err.println("Error reading and writing object ");
+		}
+
+		f.delete();
+		temp.renameTo(new File(fileNameWithPath));
+
+		this.f = new File(fileNameWithPath);
 	}
 
 	private String getName(String type) {
 		Scanner sc = new Scanner(System.in);
 
-		System.out.println("Insert the name of the " + type);
+		System.err.println("Insert the name of the " + type);
 		return sc.nextLine();
 	}
 
@@ -118,14 +169,14 @@ public class Business {
 					if (readObject instanceof Depart) {
 						readDepart = (Depart) readObject;
 
-						if(isDepart){
+						if (isDepart) {
 							readDepart.showObject();
 						}
 
 					} else if (readObject instanceof Person) {
 						readPerson = (Person) readObject;
 
-						if(!isDepart){
+						if (!isDepart) {
 							readPerson.showObject();
 						}
 					}
@@ -140,10 +191,10 @@ public class Business {
 		}
 	}
 
-	private int getLastIndex(boolean isDepart) {
-		int lastIndex=-1;
+	int getLastIndex(boolean isDepart) {
+		int lastIndex = -1;
 
-		try (FileInputStream fin = new FileInputStream(f);
+		try (FileInputStream fin = new FileInputStream(this.f);
 				ObjectInputStream in = new ObjectInputStream(fin)) {
 
 			try {
@@ -157,28 +208,26 @@ public class Business {
 					if (readObject instanceof Depart) {
 						readDepart = (Depart) readObject;
 
-						if(isDepart){
-						lastIndex=readDepart.getId();
+						if (isDepart) {
+							lastIndex = readDepart.getId();
 						}
 
 					} else if (readObject instanceof Person) {
 						readPerson = (Person) readObject;
 
-						if(!isDepart){
-							lastIndex= readPerson.getId();
+						if (!isDepart) {
+							lastIndex = readPerson.getId();
 						}
 					}
 
 				}
 			} catch (EOFException e) {
 			}
-			System.out.println("+--------------------------------------------");
 
 		} catch (Exception e) {
-			System.out.println("Error reading object ");
 		}
 
-		return lastIndex+1;
+		return lastIndex + 1;
 	}
 
 	class AppendingObjectOutputStream extends ObjectOutputStream {
