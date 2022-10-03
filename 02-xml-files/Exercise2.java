@@ -26,31 +26,10 @@ public class Exercise2 {
 	}
 
 	public static void showTitles(Document doc) {
-		Node root;
-		Node movie;
-		Node aux;
+		NodeList titles = doc.getElementsByTagName("titulo");
 
-		NodeList movies;
-		NodeList data;
-
-		root = doc.getFirstChild();
-
-		movies = root.getChildNodes();
-
-		for (int i = 0; i < movies.getLength(); i++) {
-			movie = movies.item(i);
-
-			if (movie.getNodeType() == Node.ELEMENT_NODE) {
-				data = movie.getChildNodes();
-
-				for (int j = 0; j < data.getLength(); j++) {
-					aux = data.item(i);
-
-					if (aux.getNodeType() == Node.ELEMENT_NODE && aux.getNodeName().equals("Título")) {
-						System.out.printf("%s = %s\n", aux.getNodeName(), aux.getFirstChild().getNodeValue());
-					}
-				}
-			}
+		for (int i = 0; i < titles.getLength(); i++) {
+			System.out.printf("Titulo %40s\n",titles.item(i).getTextContent().trim());
 		}
 	}
 
