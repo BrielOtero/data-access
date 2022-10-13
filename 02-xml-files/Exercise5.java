@@ -27,8 +27,13 @@ public class Exercise5 {
 	public static void showNode(Node root) {
 		NodeList nodeList = root.getChildNodes();
 		for (int i = 0; i < nodeList.getLength(); i++) {
-			System.out.println(nodeList.item(i).getTextContent());
+
+			if(nodeList.item(i).getNodeName().equals("titulo")){
+				System.out.println(nodeList.item(i).getTextContent());
+			}
+			
 			if (nodeList.item(i).getNodeType() == Node.ELEMENT_NODE) {
+				
 				showNode(nodeList.item(i));
 			}
 		}
@@ -48,13 +53,13 @@ public class Exercise5 {
 		return cont;
 	}
 
-	private static void showMovies(Document doc, int nDirectores) {
+	private static void showMovies(Document doc, int n) {
 		NodeList nl = doc.getElementsByTagName("pelicula");
 		int numOfMovies = 0;
 
 		for (int i = 0; i < nl.getLength(); i++) {
 			numOfMovies = findTheNumbersOfElements(nl.item(i).getChildNodes(), "director");
-			if (numOfMovies > nDirectores) {
+			if (numOfMovies > n) {
 				showNode(nl.item(i));
 			}
 
