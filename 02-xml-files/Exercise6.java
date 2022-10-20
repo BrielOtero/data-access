@@ -1,7 +1,10 @@
+import java.util.ArrayList;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -24,9 +27,12 @@ public class Exercise6 {
 
 	}
 
-	private static void genres(Document doc){
+	private static ArrayList<String>genres(Document doc){
 		NodeList rootList = doc.getElementsByTagName("pelicula");
 		Node movie;
+		NamedNodeMap attributes;
+		Node attribute;
+		ArrayList<String> genres = new ArrayList<>();
 		
 		for (int i = 0; i < rootList.getLength(); i++) {
 			movie = rootList.item(i);
@@ -39,17 +45,27 @@ public class Exercise6 {
 					attribute = attributes.item(k);
 
 					if (attribute.getNodeName().equals("genero")) {
-						System.out.println(attribute.getNodeName() + " -> " + attribute.getNodeValue());
+						if(!genres.contains(attribute.getNodeValue())){
+							genres.add(attribute.getNodeValue());
+						}
 					}
 
 				}
 			}
-
+		}
+		return genres;
 	}
 
 	public static void main(String[] args) {
 		Document doc = createTree("peliculas.xml");
-		genres(doc);
+		ArrayList<String> genres;
+		genres=genres(doc);
+
+		System.out.println(genres.size());
+
+		for (String string : genres) {
+			System.out.println(string);
+		}
 	}
 	
 }
