@@ -5,16 +5,14 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 import org.w3c.dom.bootstrap.DOMImplementationRegistry;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSOutput;
 import org.w3c.dom.ls.LSSerializer;
 
-public class Exercise9 {
+public class Exercise11 {
 	public static Document createTree(String path) {
 		Document doc = null;
 
@@ -49,31 +47,24 @@ public class Exercise9 {
 		serializer.write(doc, output);
 	}
 
-	public static void changeDirector(Document doc, String oldDirName, String oldDirSurname, String newDirName,
-			String newDirSurname) {
+	public static Node getNode(NodeList nodelist, String value) {
 
-		NodeList director = doc.getElementsByTagName("director");
-
-		for (int i = 0; i < director.getLength(); i++) {
-			NodeList elements = director.item(i).getChildNodes();
-			for (int j = 0; j < elements.getLength(); j++) {
-				Node element =elements.item(j);
-
-				if (element.getNodeName().equals("nombre")
-						&& element.getFirstChild().getNodeValue().equals(oldDirName)) {
-					element.getFirstChild().setNodeValue(newDirName);
-				}
-
-				if (element.getNodeName().equals("apellido")
-						&& elements.item(j ).getFirstChild().getNodeValue().equals(oldDirSurname)) {
-					element.getFirstChild().setNodeValue(newDirSurname);
-				}
+		for (int i = 0; i < nodelist.getLength(); i++) {
+			Node node = nodelist.item(i);
+			if (node.getNodeType() == Node.ELEMENT_NODE && node.getFirstChild().getNodeValue().equals(value)) {
+				return node;
 			}
-
 		}
+		return null;
+	}
+
+	public static void deleteMovie(Document doc, String title) {
+		NodeList titulos = doc.getElementsByTagName("titulo");
+		Node movie=getNode(titulos, title);
+		doc.getFirstChild().removeChild(movie.getParentNode());
 
 		try {
-			save(doc, "peliculas-ejercicio9.xml");
+			save(doc, "peliculas-ejercicio11.xml");
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | ClassCastException
 				| FileNotFoundException e) {
 			e.printStackTrace();
@@ -81,8 +72,7 @@ public class Exercise9 {
 	}
 
 	public static void main(String[] args) {
-
 		Document doc = createTree("peliculas.xml");
-		changeDirector(doc, "Larry", "Wachowski", "Lana", "Wachowski");
+		deleteMovie(doc, "Dune");
 	}
 }
