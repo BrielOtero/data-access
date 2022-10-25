@@ -1,5 +1,6 @@
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 
 import javax.print.Doc;
 import javax.xml.parsers.DocumentBuilder;
@@ -18,7 +19,7 @@ import org.w3c.dom.ls.LSSerializer;
 public class Exercise12 {
 	public static Document createTree() {
 		Document doc = null;
-
+String[]
 		try {
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			dbf.setIgnoringComments(true);
@@ -109,4 +110,8 @@ public class Exercise12 {
 
 		createTree(doc, values);
 	}
+	public class a extends ArrayList {
+	
+	}
 }
+
