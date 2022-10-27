@@ -19,7 +19,7 @@ import org.w3c.dom.ls.LSSerializer;
 public class Exercise12 {
 	public static Document createTree() {
 		Document doc = null;
-String[]
+
 		try {
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			dbf.setIgnoringComments(true);
@@ -110,8 +110,6 @@ String[]
 
 		createTree(doc, values);
 	}
-	public class a extends ArrayList {
-	
-	}
+
 }
 
