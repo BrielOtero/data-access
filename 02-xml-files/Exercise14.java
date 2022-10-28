@@ -18,13 +18,13 @@ public class Exercise14 extends DefaultHandler {
 	@Override
 	public void characters(char[] ch, int start, int length) throws SAXException {
 		super.characters(ch, start, length);
-			System.out.print(new String(ch,start,length).trim());
+			System.out.print(new String(ch,start,length));
 	}
 
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		super.endElement(uri, localName, qName);
-		System.out.println("</"+qName+">");
+		System.out.print("</"+qName+">");
 
 	}
 	
