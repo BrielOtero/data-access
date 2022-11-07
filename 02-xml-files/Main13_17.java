@@ -19,7 +19,7 @@ public class Main13_17 extends DefaultHandler{
 		Main13_17 m = new Main13_17();
 		
 		try {
-			m.getSax("peliculas.xml",new Exercise17());
+			m.getSax("peliculas.xml",new Exercise15());
 
 		} catch (ParserConfigurationException | SAXException | IOException e) {
 			e.printStackTrace();

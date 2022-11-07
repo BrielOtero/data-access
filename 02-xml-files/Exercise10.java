@@ -53,9 +53,9 @@ public class Exercise10 {
 			String film) {
 		NodeList titleList = doc.getElementsByTagName("titulo");
 		Node titleNode = getNode(titleList, film);
-		NodeList nameList = doc.getElementsByTagName("nombre");
+		NodeList nameList = ((Element)titleNode.getParentNode()).getElementsByTagName("nombre");
 		Node nameNode = getNode(nameList, name);
-		NodeList surnameList = doc.getElementsByTagName("apellido");
+		NodeList surnameList = ((Element)titleNode.getParentNode()).getElementsByTagName("apellido");
 		Node surnameNode = getNode(surnameList, surname);
 
 		if (nameNode.getParentNode().isSameNode(surnameNode.getParentNode())) {

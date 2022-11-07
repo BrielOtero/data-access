@@ -4,6 +4,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -36,8 +37,11 @@ public class Exercise6 {
 		
 		for (int i = 0; i < rootList.getLength(); i++) {
 			movie = rootList.item(i);
-
+			// Element movie2 = (Element)rootList.item(i);
 			System.out.println();
+
+			// 	if(movie2.hasAttribute("genero")&& !genres.contains(movie2.getAttribute("genero")))
+			// 	genres.add(attribute.getNodeValue());
 
 			if (movie.hasAttributes()) {
 				attributes = movie.getAttributes();

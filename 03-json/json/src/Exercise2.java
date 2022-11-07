@@ -9,6 +9,6 @@ public class Exercise2 {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(weather(-8.7226, 42.2328));
+		System.out.println(weather(42.2328, -8.7226));
 	}
 }
