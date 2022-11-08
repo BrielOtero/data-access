@@ -20,9 +20,9 @@ public class Exercise16 extends DefaultHandler {
 		if (qName.equals("pelicula")) {
 			movie = "";
 			directors = 0;
-			movie += "\n    <" + qName + ">";
+			movie += "\n    " + qName + ":";
 
-		}else movie += "<" + qName + ">";
+		}else movie +=   qName + ":";
 
 
 		if (qName.equals("director")) {
@@ -42,7 +42,7 @@ public class Exercise16 extends DefaultHandler {
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		super.endElement(uri, localName, qName);
-		movie += "</" + qName + ">";
+		// movie += "</" + qName + ">";
 		if (qName.equals("pelicula") && directors >= directorsToShow) {
 			filmoteca+=movie;
 		}
