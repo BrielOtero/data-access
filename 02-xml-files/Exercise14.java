@@ -9,7 +9,6 @@ public class Exercise14 extends DefaultHandler {
 	int depth = 0;
 
 	ArrayList<String> depthList = new ArrayList<String>(List.of("filmoteca", "pelicula", "director"));
-	// ArrayList<String> noIdent = new ArrayList<String>(List.of("titulo", "director", "nombre", "apellido"));
 
 	@Override
 	public void startDocument() throws SAXException {

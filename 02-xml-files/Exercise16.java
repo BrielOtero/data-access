@@ -5,8 +5,9 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 public class Exercise16 extends DefaultHandler {
-	private String movie = "";
-	private String filmoteca ="";
+	private String movieTitle = "";
+	private ArrayList<String> moviesTitles = new ArrayList<>();
+	boolean isElement = false;
 	private int directors = 0;
 	private int directorsToShow;
 
@@ -17,40 +18,46 @@ public class Exercise16 extends DefaultHandler {
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 		super.startElement(uri, localName, qName, attributes);
-		if (qName.equals("pelicula")) {
-			movie = "";
-			directors = 0;
-			movie += "\n    " + qName + ":";
 
-		}else movie +=   qName + ":";
-
+		if (qName.equals("titulo")) {
+			movieTitle = qName + ":";
+			isElement = true;
+		}
 
 		if (qName.equals("director")) {
 			directors++;
 		}
-
-		
 
 	}
 
 	@Override
 	public void characters(char[] ch, int start, int length) throws SAXException {
 		super.characters(ch, start, length);
-		movie += new String(ch, start, length);
+		if (isElement) {
+			movieTitle += new String(ch, start, length);
+			isElement = false;
+		}
 	}
 
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		super.endElement(uri, localName, qName);
-		// movie += "</" + qName + ">";
-		if (qName.equals("pelicula") && directors >= directorsToShow) {
-			filmoteca+=movie;
+
+		if (qName.equals("pelicula")) {
+			if (directors >= directorsToShow) {
+				moviesTitles.add(movieTitle);
+			}
+			
+			directors = 0;
 		}
 	}
+
 	@Override
 	public void endDocument() throws SAXException {
 		super.endDocument();
-		System.out.println(filmoteca);
+		for (String valueString : moviesTitles) {
+			System.out.println(valueString);
+		}
 	}
 
 }
