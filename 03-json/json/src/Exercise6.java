@@ -4,23 +4,30 @@ import javax.json.JsonValue;
 
 public class Exercise6 {
 
-	public static String getCoordsFromCity(String city) {
+    public static double[] getCoordsFromCity(String city) {
+        double[] coords;
 
-		try {
-			Exercise1 exercise1 = new Exercise1();
-			JsonValue json = exercise1.weather(city);
+        try {
+            Exercise1 exercise1 = new Exercise1();
+            JsonValue json = exercise1.weather(city);
 
-			JsonObject jsonCoords =json.asJsonObject().getJsonObject("coord");
+            JsonObject jsonCoords = json.asJsonObject().getJsonObject("coord");
+            coords = new double[2];
+            coords[0] = jsonCoords.getJsonNumber("lat").doubleValue();
+            coords[1] = jsonCoords.getJsonNumber("lon").doubleValue();
+            return coords;
 
-			return jsonCoords.getJsonNumber("lat").doubleValue() +","+ jsonCoords.getJsonNumber("lon").doubleValue();
+        } catch (Exception e) {
+            coords = null;
+            return coords;
+        }
+    }
 
-		} catch (Exception e) {
-			return "City not found";
-		}
-	}
+    public static void main(String[] args) {
+        double[] coord = getCoordsFromCity("Vigo");
+        if (coord != null) {
+            System.out.println(coord[0] + "," + coord[1]);
+        }
 
-	public static void main(String[] args) {
-		System.out.println(getCoordsFromCity("Vigo"));
-		
-	}
+    }
 }
