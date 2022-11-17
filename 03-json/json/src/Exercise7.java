@@ -8,7 +8,7 @@ import javax.json.JsonValue;
 public class Exercise7 {
     public static void getDataFromCity(String city) {
 
-        // try {
+         try {
             Exercise1 exercise1 = new Exercise1();
             JsonValue json = exercise1.weather(city);
 
@@ -26,9 +26,9 @@ public class Exercise7 {
             System.out.println("Clouds: "+clouds+"%");
             System.out.println("Wind Speed: "+windSpeed+"Km/h");
             System.out.println("Forecast: "+weather);
-        // } catch (Exception e) {
-        //     System.out.println("City not found");
-        // }
+        } catch (Exception e) {
+            System.out.println("City not found");
+        }
     }
 
     public static String unixTimeToString(long unixTime) {
