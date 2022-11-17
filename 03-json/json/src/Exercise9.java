@@ -5,7 +5,7 @@ import javax.json.JsonValue;
 public class Exercise9 {
     public static JsonValue getTrivia(){
         FunctionsJson f = new FunctionsJson();
-        return= f.openJSON("https://opentdb.com/api.php?amount=20&category=18&difficulty=hard&type=multiple");
+        return f.openJSON("https://opentdb.com/api.php?amount=20&category=18&difficulty=hard&type=multiple");
     }
     public static void trivia() {
         JsonValue json = getTrivia();

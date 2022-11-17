@@ -4,7 +4,7 @@ import javax.json.JsonValue;
 public class Exercise10 {
     public static JsonValue getEventos(String country){
         FunctionsJson f = new FunctionsJson();
-        return= f.openJSON("https://app.ticketmaster.com/discovery/v2/events.json?countryCode="+country+"&apikey=AMXR5Rf8zlr7oGucsebGKvDCLOQmGUGE");
+        return f.openJSON("https://app.ticketmaster.com/discovery/v2/events.json?countryCode="+country+"&apikey=AMXR5Rf8zlr7oGucsebGKvDCLOQmGUGE");
     }
 
     public static void eventos(String country) {
