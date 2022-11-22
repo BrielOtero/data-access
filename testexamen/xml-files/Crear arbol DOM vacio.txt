@@ -1,0 +1,4 @@
+  DocumentBuilderFactory factory=DocumentBuilderFactory.newInstance(); 
+  DocumentBuilder builder=factory.newDocumentBuilder(); 
+ 
+  Document doc=builder.newDocument(); 
