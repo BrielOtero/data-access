@@ -32,7 +32,7 @@ public class Exercise3 {
 
 	public static void main(String[] args) {
 
-		int a = charCounter(new File("C:\\Users\\Gabriel\\Downloads\\Ficheros.txt"), 'a');
+		int a = charCounter(new File("C:\\Users\\ID\\Downloads\\Ficheros2.txt"), 'e');
 		System.out.println(a);
 
 	}

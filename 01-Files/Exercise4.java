@@ -77,7 +77,7 @@ public class Exercise4 {
 
 		ArrayList<Character> c = new ArrayList<>();
 
-		c = charMostUsed(new File("C:\\Users\\Gabriel\\Downloads\\Ficheros.txt"));
+		c = charMostUsed(new File("C:\\Users\\ID\\Downloads\\Ficheros.txt"));
 
 		for (Character character : c) {
 			System.out.println(character);
