@@ -90,12 +90,26 @@ public class Exercises {
 
     public static void ejercicio5_2_AlumnosAsignaturasNotas() {
         ResultSet res = connectors.executeQuery(
-                "SELECT alumnos.nombre, asignaturas.NOMBRE, notas.NOTA FROM notas JOIN asignaturas ON notas.asignatura=asignaturas.COD JOIN alumnos ON notas.alumno=alumnos.codigo WHERE nota>=5");
+                "SELECT alumnos.nombre, asignaturas.NOMBRE as asignaturas, notas.NOTA FROM notas JOIN asignaturas ON notas.asignatura=asignaturas.COD JOIN alumnos ON notas.alumno=alumnos.codigo WHERE nota>=5");
 
         try {
             while (res.next()) {
-                System.out.println(String.format("%-15s %-15s %-15d", res.getString("nombre"), res.getString("nombre"),
-                        res.getInt("nota")));
+                System.out.println(
+                        String.format("%-15s %-35s %-15d", res.getString("nombre"), res.getString("asignaturas"),
+                                res.getInt("nota")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void ejercicio5_3_AsignaturasSinAlumnos() {
+        ResultSet res = connectors
+                .executeQuery("SELECT nombre FROM asignaturas WHERE cod!=All(SELECT asignatura FROM notas)");
+
+        try {
+            while (res.next()) {
+                System.out.println(res.getString("nombre"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -112,5 +126,6 @@ public class Exercises {
         // ejercicio4_Students(new Subject(9, "Lengua"));
         // ejercicio5_1_AulasConAlumnos();
         // ejercicio5_2_AlumnosAsignaturasNotas();
+        ejercicio5_3_AsignaturasSinAlumnos();
     }
 }
