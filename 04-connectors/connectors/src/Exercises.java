@@ -116,16 +116,68 @@ public class Exercises {
         }
     }
 
-    public static void main(String[] args) {
-        // ejercicio1("Larry");
-        // ejercicio2_Alumnos(new Student("Gabriel", "Otero", 184, 20));
-        // ejercicio2_Asignaturas(new Subject("Mates"));
-        // ejercicio3_Alumnos(11);
-        // ejercicio3_Asignaturas(9);
-        // ejercicio4_Alumnos(new Student(10, null, null, null, 21));
-        // ejercicio4_Students(new Subject(9, "Lengua"));
-        // ejercicio5_1_AulasConAlumnos();
-        // ejercicio5_2_AlumnosAsignaturasNotas();
-        ejercicio5_3_AsignaturasSinAlumnos();
+    public static void ejercicio6_1_WithOutPreparedStatement(int height, String pattern) {
+        ResultSet res = connectors.executeQuery(
+                "SELECT nombre FROM alumnos WHERE altura>" + height + " AND nombre LIKE '" + pattern + "'");
+
+        try {
+            while (res.next()) {
+                System.out.println(res.getString("nombre"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
+    public static void ejercicio6_2_WithPreparedStatement(Integer height, String pattern) {
+        ResultSet res = connectors.executePreparedStatement(
+                "SELECT nombre FROM alumnos WHERE altura>? AND nombre LIKE ?", new Object[] { height, pattern });
+
+        try {
+            while (res.next()) {
+                System.out.println(res.getString("nombre"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void ejercicio8_AddTable(String table, String column, String dateType, String properties) {
+        connectors
+                .executeUpdate("ALTER TABLE " + table + " ADD " + column + " " + dateType + " " + properties);
+    }
+
+    public static void ejercicio9() {
+
+    }
+
+    public static void main(String[] args) {
+
+        // Ejercicio 7
+        int runs = 1;
+        long startTime = System.currentTimeMillis();
+
+        for (int i = 0; i < runs; i++) {
+
+            // ejercicio1("Larry");
+            // ejercicio2_Alumnos(new Student("Gabriel", "Otero", 184, 20));
+            // ejercicio2_Asignaturas(new Subject("Mates"));
+            // ejercicio3_Alumnos(11);
+            // ejercicio3_Asignaturas(9);
+            // ejercicio4_Alumnos(new Student(10, null, null, null, 21));
+            // ejercicio4_Students(new Subject(9, "Lengua"));
+            // ejercicio5_1_AulasConAlumnos();
+            // ejercicio5_2_AlumnosAsignaturasNotas();
+            // ejercicio5_3_AsignaturasSinAlumnos();
+            // ejercicio6_1_WithOutPreparedStatement(180, "%hili%");
+            // ejercicio6_2_WithPreparedStatement(180, "%hili%");
+            // ejercicio8_AddTable("alumnos", "test", "varchar(20)", "NOT NULL");
+            // ejerciocio9
+        }
+
+        // Ejercicio 7
+        long resultTime = System.currentTimeMillis() - startTime;
+        System.out.println("\nExecution time: " + resultTime + " ms");
+    }
+
 }
