@@ -1,4 +1,5 @@
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -69,5 +70,47 @@ public class Connectors {
 
         return null;
     }
+
+    public DatabaseMetaData getDatabaseMetaData() {
+        try {
+            return this.conexion.getMetaData();
+
+        } catch (SQLException e) {
+            System.out.println("Error getting data " + e.getLocalizedMessage());
+        }
+
+        return null;
+    }
+
+    // public DatabaseMetaData getDatabaseMetaData(String table) {
+    // DatabaseMetaData dbmt;
+    // ResultSet tables;
+    // ResultSet columns;
+
+    // try {
+    // dbmt = this.conexion.getMetaData();
+    // tables = dbmt.getTables(table, null, null, null);
+
+    // while (tables.next()) {
+    // System.out.println(
+    // String.format("%s %s", tables.getString("TABLE_NAME"),
+    // tables.getString("TABLE_TYPE")));
+    // columns = dbmt.getColumns(table, null, tables.getString("TABLE_NAME"), null);
+
+    // while (columns.next()) {
+    // String.format(" %s %s %d %s %s",
+    // columns.getString("COLUMN_NAME"),
+    // columns.getString("COLUMN_NAME"),
+    // columns.getString("COLUMN_NAME"),
+    // columns.getInt("COLUMN_SIZE"),
+    // columns.getString("IS_NULLABLE"),
+    // columns.getString("IS_AUTOINCREMENT"));
+    // }
+    // }
+    // } catch (SQLException e) {
+    // System.out.println("Error getting data "+e.getLocalizedMessage());
+    // }
+
+    // }
 
 }

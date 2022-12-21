@@ -1,5 +1,8 @@
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import javax.xml.crypto.Data;
 
 public class Exercises {
     public static Connectors connectors = new Connectors();
@@ -147,8 +150,48 @@ public class Exercises {
                 .executeUpdate("ALTER TABLE " + table + " ADD " + column + " " + dateType + " " + properties);
     }
 
-    public static void ejercicio9() {
+    public static void ejercicio9_A() {
+        try {
+            DatabaseMetaData dbmd = connectors.getDatabaseMetaData();
+            System.out.println("Driver Name: " + dbmd.getDriverName());
+            System.out.println("Driver Version: " + dbmd.getDriverVersion());
+            System.out.println("URL Conexion: " + dbmd.getURL());
+            System.out.println("Connected User: " + dbmd.getUserName());
+            System.out.println("SGBD Name: " + dbmd.getDatabaseProductName());
+            System.out.println("SGBD Version: " + dbmd.getDatabaseProductVersion());
+            System.out.println("Reserved words: " + dbmd.getSQLKeywords());
 
+        } catch (SQLException e) {
+            System.out.println("Error getting data");
+        }
+    }
+
+    public static void ejercicio9_B() {
+        DatabaseMetaData dbmd = connectors.getDatabaseMetaData();
+        try {
+            ResultSet res = dbmd.getCatalogs();
+            while (res.next()) {
+                System.out.println(res.getString("TABLE_CAT"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void ejercicio9_C(String database) {
+        DatabaseMetaData dbmd = connectors.getDatabaseMetaData();
+
+        try {
+            ResultSet res = dbmd.getTables(database, null, null, null);
+
+            System.out.println(String.format("%-15s | %-15s", "Name", "Type"));
+            while (res.next()) {
+                System.out.println(
+                        String.format("%-15s | %-15s", res.getString("TABLE_NAME"), res.getString("TABLE_TYPE")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
@@ -172,7 +215,10 @@ public class Exercises {
             // ejercicio6_1_WithOutPreparedStatement(180, "%hili%");
             // ejercicio6_2_WithPreparedStatement(180, "%hili%");
             // ejercicio8_AddTable("alumnos", "test", "varchar(20)", "NOT NULL");
-            // ejerciocio9
+            // ejercicio9_A();
+            // ejercicio9_B();
+            ejercicio9_C("ADD");
+
         }
 
         // Ejercicio 7
