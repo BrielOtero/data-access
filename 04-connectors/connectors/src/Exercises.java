@@ -2,8 +2,6 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javax.xml.crypto.Data;
-
 public class Exercises {
     public static Connectors connectors = new Connectors();
 
