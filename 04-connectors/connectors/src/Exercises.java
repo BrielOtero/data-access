@@ -6,11 +6,16 @@ public class Exercises {
     public static Connectors connectors = new Connectors();
 
     public static void ejercicio1(String cad) {
-        ResultSet rs = connectors
-                .executeQuery(
-                        "SELECT altura, apellidos,aula,nombre,codigo FROM alumnos WHERE nombre LIKE '%" + cad + "%'");
         try {
+            ResultSet rs = connectors
+                    .executeQuery(
+                            "SELECT altura, apellidos,aula,nombre,codigo FROM alumnos WHERE nombre LIKE '%" + cad
+                                    + "%'");
             int cont = 0;
+            // rs.last();
+            // int numeroFilas = rs.getRow();
+            // rs.beforeFirst();
+
             while (rs.next()) {
                 System.out.println("Row: " + cont + " " + rs.getString("Nombre"));
                 cont++;
@@ -22,19 +27,23 @@ public class Exercises {
     }
 
     public static void ejercicio2_Alumnos(Student student) {
+        try {
 
-        int res = connectors.executeUpdate(
-                String.format("INSERT INTO alumnos (nombre,apellidos,altura,aula) VALUES (\"%s\",\"%s\",%d,%d)",
-                        student.nombre,
-                        student.apellidos, student.altura, student.aula));
+            int res = connectors.executeUpdate(
+                    String.format("INSERT INTO alumnos (nombre,apellidos,altura,aula) VALUES (\"%s\",\"%s\",%d,%d)",
+                            student.nombre,
+                            student.apellidos, student.altura, student.aula));
 
-        System.out.println(res == 1 ? "Alumno inserted successfully" : "Alumno not inserted");
+            System.out.println(res == 1 ? "Alumno inserted successfully" : "Alumno not inserted");
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
     }
 
     public static void ejercicio2_Asignaturas(Subject subject) {
-        ResultSet result = connectors.executeQuery("SELECT cod FROM asignaturas ORDER BY cod desc LIMIT 1");
-
         try {
+            ResultSet result = connectors.executeQuery("SELECT cod FROM asignaturas ORDER BY cod desc LIMIT 1");
+
             result.next();
             int index = result.getInt("cod") + 1;
             int res = connectors.executeUpdate(
@@ -48,39 +57,54 @@ public class Exercises {
     }
 
     public static void ejercicio3_Alumnos(int cod) {
+        try {
+            int res = connectors.executeUpdate(String.format("DELETE FROM alumnos WHERE codigo=%d", cod));
 
-        int res = connectors.executeUpdate(String.format("DELETE FROM alumnos WHERE codigo=%d", cod));
-
-        System.out.println(res == 1 ? "Alumno deleted successfully" : "Alumno not deleted");
+            System.out.println(res == 1 ? "Alumno deleted successfully" : "Alumno not deleted");
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
     }
 
     public static void ejercicio3_Asignaturas(int cod) {
-        int res = connectors.executeUpdate(String.format("DELETE FROM asignaturas WHERE cod=%d", cod));
+        try {
+            int res = connectors.executeUpdate(String.format("DELETE FROM asignaturas WHERE cod=%d", cod));
 
-        System.out.println(res == 1 ? "Asignatura deleted successfully" : "Asignatura not deleted");
+            System.out.println(res == 1 ? "Asignatura deleted successfully" : "Asignatura not deleted");
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
     }
 
     public static void ejercicio4_Alumnos(Student student) {
+        try {
+            int res = connectors.executeUpdate(String.format(
+                    "UPDATE alumnos SET nombre=IFNULL(%s,nombre), apellidos=IFNULL(%s,apellidos), altura=IFNULL(%d,altura), aula=IFNULL(%d,aula) WHERE codigo=%d",
+                    student.getNombreSQL(), student.getApellidosSQL(), student.altura, student.aula, student.id));
 
-        int res = connectors.executeUpdate(String.format(
-                "UPDATE alumnos SET nombre=IFNULL(%s,nombre), apellidos=IFNULL(%s,apellidos), altura=IFNULL(%d,altura), aula=IFNULL(%d,aula) WHERE codigo=%d",
-                student.getNombreSQL(), student.getApellidosSQL(), student.altura, student.aula, student.id));
-
-        System.out.println(res == 1 ? "Alumno modified successfully" : "Alumno not modified");
+            System.out.println(res == 1 ? "Alumno modified successfully" : "Alumno not modified");
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
     }
 
     public static void ejercicio4_Students(Subject subject) {
-        int res = connectors.executeUpdate(String.format("UPDATE asignaturas SET nombre=IFNULL(%s,nombre) WHERE cod=%d",
-                subject.getNombreSQL(), subject.id));
+        try {
+            int res = connectors
+                    .executeUpdate(String.format("UPDATE asignaturas SET nombre=IFNULL(%s,nombre) WHERE cod=%d",
+                            subject.getNombreSQL(), subject.id));
 
-        System.out.println(res == 1 ? "Asignatura modified successfully" : "Asignatura not modified");
+            System.out.println(res == 1 ? "Asignatura modified successfully" : "Asignatura not modified");
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
     }
 
     public static void ejercicio5_1_AulasConAlumnos() {
-        ResultSet res = connectors
-                .executeQuery("SELECT nombreAula FROM aulas WHERE numero IN (SELECT aula FROM alumnos)");
-
         try {
+            ResultSet res = connectors
+                    .executeQuery("SELECT nombreAula FROM aulas WHERE numero IN (SELECT aula FROM alumnos)");
+
             while (res.next()) {
                 System.out.println(res.getString("nombreAula"));
             }
@@ -90,10 +114,10 @@ public class Exercises {
     }
 
     public static void ejercicio5_2_AlumnosAsignaturasNotas() {
-        ResultSet res = connectors.executeQuery(
-                "SELECT alumnos.nombre, asignaturas.NOMBRE as asignaturas, notas.NOTA FROM notas JOIN asignaturas ON notas.asignatura=asignaturas.COD JOIN alumnos ON notas.alumno=alumnos.codigo WHERE nota>=5");
-
         try {
+            ResultSet res = connectors.executeQuery(
+                    "SELECT alumnos.nombre, asignaturas.NOMBRE as asignaturas, notas.NOTA FROM notas JOIN asignaturas ON notas.asignatura=asignaturas.COD JOIN alumnos ON notas.alumno=alumnos.codigo WHERE nota>=5");
+
             while (res.next()) {
                 System.out.println(
                         String.format("%-15s %-35s %-15d", res.getString("nombre"), res.getString("asignaturas"),
@@ -105,10 +129,10 @@ public class Exercises {
     }
 
     public static void ejercicio5_3_AsignaturasSinAlumnos() {
-        ResultSet res = connectors
-                .executeQuery("SELECT nombre FROM asignaturas WHERE cod!=All(SELECT asignatura FROM notas)");
-
         try {
+            ResultSet res = connectors
+                    .executeQuery("SELECT nombre FROM asignaturas WHERE cod!=All(SELECT asignatura FROM notas)");
+
             while (res.next()) {
                 System.out.println(res.getString("nombre"));
             }
@@ -118,10 +142,10 @@ public class Exercises {
     }
 
     public static void ejercicio6_1_WithOutPreparedStatement(int height, String pattern) {
-        ResultSet res = connectors.executeQuery(
-                "SELECT nombre FROM alumnos WHERE altura>" + height + " AND nombre LIKE '" + pattern + "'");
-
         try {
+            ResultSet res = connectors.executeQuery(
+                    "SELECT nombre FROM alumnos WHERE altura>" + height + " AND nombre LIKE '" + pattern + "'");
+
             while (res.next()) {
                 System.out.println(res.getString("nombre"));
             }
@@ -131,10 +155,10 @@ public class Exercises {
     }
 
     public static void ejercicio6_2_WithPreparedStatement(Integer height, String pattern) {
-        ResultSet res = connectors.executePreparedStatement(
-                "SELECT nombre FROM alumnos WHERE altura>? AND nombre LIKE ?", new Object[] { height, pattern });
-
         try {
+            ResultSet res = connectors.executePreparedStatement(
+                    "SELECT nombre FROM alumnos WHERE altura>? AND nombre LIKE ?", new Object[] { height, pattern });
+
             while (res.next()) {
                 System.out.println(res.getString("nombre"));
             }
@@ -143,9 +167,15 @@ public class Exercises {
         }
     }
 
-    public static void ejercicio8_AddTable(String table, String column, String dateType, String properties) {
-        connectors
-                .executeUpdate("ALTER TABLE " + table + " ADD " + column + " " + dateType + " " + properties);
+    public static void ejercicio8_AddColumn(String table, String column, String dateType, String properties) {
+        try {
+            int res = connectors
+                    .executeUpdate("ALTER TABLE " + table + " ADD " + column + " " + dateType + " " + properties);
+
+            System.out.println(res >= 0 ? "Column added" : "Column not added");
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
     }
 
     public static void ejercicio9_A() {
@@ -165,8 +195,8 @@ public class Exercises {
     }
 
     public static void ejercicio9_B() {
-        DatabaseMetaData dbmd = connectors.getDatabaseMetaData();
         try {
+            DatabaseMetaData dbmd = connectors.getDatabaseMetaData();
             ResultSet res = dbmd.getCatalogs();
             while (res.next()) {
                 System.out.println(res.getString("TABLE_CAT"));
@@ -177,9 +207,9 @@ public class Exercises {
     }
 
     public static void ejercicio9_C(String database) {
-        DatabaseMetaData dbmd = connectors.getDatabaseMetaData();
-
         try {
+            DatabaseMetaData dbmd = connectors.getDatabaseMetaData();
+
             ResultSet res = dbmd.getTables(database, null, null, null);
 
             System.out.println(String.format("%-15s | %-15s", "Name", "Type"));
@@ -190,6 +220,27 @@ public class Exercises {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void ejercicio9_D(String database) {
+        try {
+            DatabaseMetaData dbmd = connectors.getDatabaseMetaData();
+            String[] types = { "VIEW" };
+
+            ResultSet res = dbmd.getTables(database, null, null, types);
+            System.out.println(String.format("%-15s | %-15s", "Name", "Type"));
+            while (res.next()) {
+                System.out.println(
+                        String.format("%-15s | %-15s", res.getString("TABLE_NAME"), res.getString("TABLE_TYPE")));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static void ejercicio9_E() {
+        ejercicio9_C(null);
     }
 
     public static void main(String[] args) {
@@ -212,10 +263,15 @@ public class Exercises {
             // ejercicio5_3_AsignaturasSinAlumnos();
             // ejercicio6_1_WithOutPreparedStatement(180, "%hili%");
             // ejercicio6_2_WithPreparedStatement(180, "%hili%");
-            // ejercicio8_AddTable("alumnos", "test", "varchar(20)", "NOT NULL");
+            // ejercicio8_AddColumn("alumnos", "test5", "varchar(20)", "NOT NULL");
             // ejercicio9_A();
             // ejercicio9_B();
-            ejercicio9_C("ADD");
+            // ejercicio9_C("ADD");
+            // ejercicio9_D("ADD");
+            ejercicio9_E();
+            // ejercicio9_F();
+            // ejercicio9_G();
+            // ejercicio9_H();
 
         }
 

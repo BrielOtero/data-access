@@ -44,8 +44,9 @@ public class Connectors {
             return st.executeUpdate(query);
         } catch (Exception e) {
         }
-        return 0;
+        return -1;
     }
+    PreparedStatement ps;
 
     public ResultSet executePreparedStatement(String query, Object[] objects) {
         try {
