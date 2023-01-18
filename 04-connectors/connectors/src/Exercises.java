@@ -243,6 +243,18 @@ public class Exercises {
         ejercicio9_C(null);
     }
 
+    public static void ejercicio9_F(String database) {
+                DatabaseMetaData dbmd= connectors.getDatabaseMetaData();
+    }
+
+    public static void ejercicio9_G() {
+
+    }
+
+    public static void ejercicio_H() {
+
+    }
+
     public static void main(String[] args) {
 
         // Ejercicio 7
