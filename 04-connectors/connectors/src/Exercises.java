@@ -244,14 +244,51 @@ public class Exercises {
     }
 
     public static void ejercicio9_F(String database) {
-                DatabaseMetaData dbmd= connectors.getDatabaseMetaData();
+        try {
+            DatabaseMetaData dbmd = connectors.getDatabaseMetaData();
+            ResultSet res = dbmd.getProcedureColumns(database, null, null, null);
+            System.out.println(String.format("%-15s", "Name"));
+
+            while (res.next()) {
+                System.out.println(
+                        String.format("%-15s", res.getString("PROCEDURE_NAME")));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    public static void ejercicio9_G() {
+    public static void ejercicio9_G(String database) {
+        try {
+            DatabaseMetaData dbmd = connectors.getDatabaseMetaData();
+            ResultSet res = dbmd.getColumns(database, null, null, "a%");
+
+            System.out
+                    .println(String.format("%-20s | %-15s | %-20s | %-20s | %-10s | %-10s | %-10s", "ORDINAL_POSITION",
+                            "DATABASE", "TABLE_NAME", "COLUMN_NAME", "TYPE_NAME", "COLUMN_SIZE", "NULLABLE"));
+
+            while (res.next()) {
+                System.out.println(String.format("%-20s | %-15s | %-20s | %-20s | %-10s | %-10s | %-10s",
+                        res.getInt("ORDINAL_POSITION"), database, res.getString("TABLE_NAME"),
+                        res.getString("COLUMN_NAME"),
+                        res.getString("TYPE_NAME"),
+                        res.getInt("COLUMN_SIZE"), res.getBoolean("NULLABLE")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
 
-    public static void ejercicio_H() {
+    public static void ejercicio_H(String database) {
+        DatabaseMetaData dbmd= connectors.getDatabaseMetaData();
+        try {
+            dbmd.getPrimaryKeys(database, null, null);
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
     }
 
@@ -280,9 +317,9 @@ public class Exercises {
             // ejercicio9_B();
             // ejercicio9_C("ADD");
             // ejercicio9_D("ADD");
-            ejercicio9_E();
-            // ejercicio9_F();
-            // ejercicio9_G();
+            // ejercicio9_E();
+            // ejercicio9_F("ADD");
+            ejercicio9_G("ADD");
             // ejercicio9_H();
 
         }
