@@ -1,9 +1,18 @@
+import java.io.InputStream;
 import java.sql.DatabaseMetaData;
+import java.sql.Driver;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Enumeration;
 
 public class Exercises {
 	public static Connectors connectors = new Connectors();
+	public static SQLite sqLite = new SQLite();
+
+	
 
 	public static void ejercicio1(String cad) {
 		try {
@@ -12,7 +21,7 @@ public class Exercises {
 							"SELECT altura, apellidos,aula,nombre,codigo FROM alumnos WHERE nombre LIKE '%" + cad
 									+ "%'");
 			int cont = 0;
-			// rs.last();
+			// rs.last();s
 			// int numeroFilas = rs.getRow();
 			// rs.beforeFirst();
 
@@ -282,26 +291,128 @@ public class Exercises {
 	}
 
 	public static void ejercicio9_H(String database) {
-		DatabaseMetaData dbmd = connectors.getDatabaseMetaData();
 		try {
+			DatabaseMetaData dbmd = connectors.getDatabaseMetaData();
 			ResultSet res1 = dbmd.getPrimaryKeys(database, null, null);
 			ResultSet res2 = dbmd.getExportedKeys(database, null, null);
 
-			System.out.println(String.format("%-20s", "PK_NAME"));
+			System.out.println(String.format("%-20s", "COLUMN_NAME"));
 			while (res1.next()) {
 				System.out.println(String.format("%-20s",
-						res1.getString("PK_NAME")));
+						res1.getString("COLUMN_NAME")));
 			}
 
 			System.out.println(String.format("%-20s", "FKTABLE_NAME "));
 			while (res2.next()) {
-				System.out.println(String.format("%-20s",
-						res2.getString("FKTABLE_NAME")));
+				System.out.println(String.format("%-20s | %-20s | %-20s",
+						res2.getString("FKCOLUMN_NAME"), res2.getString("FKCOLUMN_NAME"),
+						res2.getString("FKCOLUMN_NAME")));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
+	}
+
+	public static void ejercicio10(String database, String query) {
+		try {
+			connectors.makeStatement();
+			ResultSet rows = connectors.executeQuery(query);
+			ResultSetMetaData rsmd = rows.getMetaData();
+			System.out.println(String.format("%-20s | %-20s | %-20s | %-15s | %-10s", "Name", "Label", "Type",
+					"AutoIncrement", "Nullable"));
+
+			for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+				System.out.println(String.format("%-20s | %-20s | %-20s | %-15b | %-10d", rsmd.getColumnName(i),
+						rsmd.getColumnLabel(i), rsmd.getColumnTypeName(i), rsmd.isAutoIncrement(i),
+						rsmd.isNullable(i)));
+
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void ejercicio11() {
+		try {
+			Enumeration<Driver> drivers = DriverManager.getDrivers();
+
+			while (drivers.hasMoreElements()) {
+				System.out.println(drivers.nextElement().getClass().getName());
+			}
+
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+	}
+
+	public static void ejercicio12() {
+		try {
+
+			/**
+			 * En el primer caso tendríamos que hacer un prepare stament deshabilitando el
+			 * auto commit
+			 */
+			connectors.conexion.setAutoCommit(false);
+
+			/**
+			 * En el segundo caso primero debemos guardar un savepoint en el rollbackal
+			 * detectar que la consulta a sido fallida debemos
+			 * hacer un rollback
+			 */
+			connectors.conexion.rollback(null);
+			connectors.conexion.rollback();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void ejercicio13() {
+		try {
+			ResultSet res = connectors.executeQuery("SELECT * FROM imagenes LIMIT 1");
+			InputStream file = res.getBinaryStream("imagen");
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void ejercicio14() {
+
+	}
+
+	public static void ejercicio15() {
+
+	}
+
+	public static void ejercicio16() {
+
+	}
+
+	public static void ejercicio17() {
+
+	}
+
+	public static void sqlite1() {
+		// Ready
+	}
+
+	public static void sqlite2() {
+		// Ready
+	}
+
+	public static void sqlite3() {
+		try {
+			ResultSet rs = sqLite.executeQuery("SELECT * FROM alumnos");
+			System.out.println(rs.next());
+			while (rs.next()) {
+				System.out.println("A "+rs.getString("nombre"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static void main(String[] args) {
@@ -332,7 +443,11 @@ public class Exercises {
 			// ejercicio9_E();
 			// ejercicio9_F("ADD");
 			// ejercicio9_G("ADD");
-			ejercicio9_H("ADD");
+			// ejercicio9_H("ADD");
+			// ejercicio10("ADD", "select *, nombre as non from alumnos");
+			// ejercicio11();
+
+			sqlite3();
 
 		}
 
