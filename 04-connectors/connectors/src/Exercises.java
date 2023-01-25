@@ -2,6 +2,7 @@ import java.io.InputStream;
 import java.sql.DatabaseMetaData;
 import java.sql.Driver;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -11,8 +12,6 @@ import java.util.Enumeration;
 public class Exercises {
 	public static Connectors connectors = new Connectors();
 	public static SQLite sqLite = new SQLite();
-
-	
 
 	public static void ejercicio1(String cad) {
 		try {
@@ -404,15 +403,46 @@ public class Exercises {
 	}
 
 	public static void sqlite3() {
-		try {
-			ResultSet rs = sqLite.executeQuery("SELECT * FROM alumnos");
-			System.out.println(rs.next());
+		try (Statement st = sqLite.conexion.createStatement()) {
+
+			ResultSet rs = st.executeQuery(
+					"select * from aulas where puestos in (select distinct puestos from aulas order by puestos desc limit 1,2) order by puestos desc;");
+
+			System.out.println("\nnombreAula\n");
 			while (rs.next()) {
-				System.out.println("A "+rs.getString("nombre"));
+				System.out.println(rs.getString("nombreAula"));
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+
+		} catch (Exception e) {
+			System.out.println("Error executing SQlite query" + e.getMessage());
 		}
+	}
+
+	public static void sqlite4(int positions) {
+		try (Statement st = sqLite.conexion.createStatement()) {
+
+			// if(){
+
+			// }
+
+			//LISS
+			PreparedStatement preparedStatement = null;
+			String query = "select * from aulas where puestos > ?";
+			if (preparedStatement == null) {
+				preparedStatement = connectors.conexion.prepareStatement(query);
+			}
+
+			preparedStatement.setInt(1, positions);
+			ResultSet resu = preparedStatement.executeQuery();
+
+			while (resu.next()) {
+				System.out.println(resu.getString("nosecomosellama"));
+			}
+
+		} catch (Exception e) {
+			System.out.println("Error executing SQlite query" + e.getMessage());
+		}
+
 	}
 
 	public static void main(String[] args) {

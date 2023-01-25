@@ -8,7 +8,7 @@ public class SQLite {
 	public Connection conexion;
 
 	public SQLite() {
-		openConnection("z:/bdsqlite.db");
+		openConnection("database/bdsqlite.db");
 		
 	}
 
@@ -33,16 +33,6 @@ public class SQLite {
 			System.out.println("SQLState: " + e.getSQLState());
 			System.out.println("Código error: " + e.getErrorCode());
 		}
-	}
-
-	public ResultSet executeQuery(String query) {
-		try (Statement st = this.conexion.createStatement()) {
-			return st.executeQuery(query);
-
-		} catch (Exception e) {
-			System.out.println("Error executing SQlite query" + e.getMessage());
-		}
-		return null;
 	}
 
 }
