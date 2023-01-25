@@ -419,39 +419,76 @@ public class Exercises {
 	}
 
 	public static void sqlite4(int positions) {
+		String queryWithoutPreparedStatement = "SELECT * FROM aulas WHERE puestos >" + positions;
+		String queryWithPreparedStatement = "SELECT * FROM aulas WHERE puestos > ?";
+
 		try (Statement st = sqLite.conexion.createStatement()) {
 
-			// if(){
+			ResultSet rs = st.executeQuery(queryWithoutPreparedStatement);
 
-			// }
+			System.out.println("Without prepared statement");
+			while (rs.next()) {
+				System.out.println(rs.getString("nombreAula"));
 
-			//LISS
-			PreparedStatement preparedStatement = null;
-			String query = "select * from aulas where puestos > ?";
-			if (preparedStatement == null) {
-				preparedStatement = connectors.conexion.prepareStatement(query);
-			}
-
-			preparedStatement.setInt(1, positions);
-			ResultSet resu = preparedStatement.executeQuery();
-
-			while (resu.next()) {
-				System.out.println(resu.getString("nosecomosellama"));
 			}
 
 		} catch (Exception e) {
 			System.out.println("Error executing SQlite query" + e.getMessage());
 		}
 
+		try (PreparedStatement preparedStatement = sqLite.conexion.prepareStatement(queryWithPreparedStatement)) {
+
+			preparedStatement.setInt(1, positions);
+
+			ResultSet rs = preparedStatement.executeQuery();
+
+			System.out.println("With prepared statement");
+
+			while (rs.next()) {
+				System.out.println(rs.getString("nombreAula"));
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void sqlite5(String name, String lastname, int height, int classroom) {
+		try (Statement st = sqLite.conexion.createStatement()) {
+			int maxCode = -1;
+			ResultSet rs = st.executeQuery("SELECT max(codigo) as 'codigo' FROM alumnos;");
+
+			while (rs.next()) {
+				maxCode = rs.getInt("codigo");
+			}
+
+			if (maxCode == -1)
+				return;
+
+			maxCode++;
+			String query = String.format("INSERT INTO alumnos VALUES(%d,'%s','%s',%d,%d)", maxCode, name, lastname,
+			height, classroom);
+
+			System.out.println("Query: "+query);
+			st.executeQuery(query);
+
+			System.out.println(maxCode);
+
+		} catch (Exception e) {
+			System.out.println("Error executing SQlite query" + e.getMessage());
+		}
 	}
 
 	public static void main(String[] args) {
 
-		// Ejercicio 7
+		// Exercise 7
 		int runs = 1;
 		long startTime = System.currentTimeMillis();
 
 		for (int i = 0; i < runs; i++) {
+
+			// Connectors
 
 			// ejercicio1("Larry");
 			// ejercicio2_Alumnos(new Student("Gabriel", "Otero", 184, 20));
@@ -477,7 +514,11 @@ public class Exercises {
 			// ejercicio10("ADD", "select *, nombre as non from alumnos");
 			// ejercicio11();
 
-			sqlite3();
+			// SQLite
+
+			// sqlite3();
+			// sqlite4(34);
+			sqlite5("Gabriel", "Otero", 184, 20);
 
 		}
 
