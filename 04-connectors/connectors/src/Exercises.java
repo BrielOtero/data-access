@@ -454,27 +454,46 @@ public class Exercises {
 
 	}
 
-	public static void sqlite5(String name, String lastname, int height, int classroom) {
-		try (Statement st = sqLite.conexion.createStatement()) {
-			int maxCode = -1;
-			ResultSet rs = st.executeQuery("SELECT max(codigo) as 'codigo' FROM alumnos;");
+	public static void sqlite5(String name, int positions) {
+		try {
+
+			int maxNumber = -1;
+			Statement st = sqLite.conexion.createStatement();
+
+			ResultSet rs = st.executeQuery("SELECT max(numero) as 'numero' FROM aulas;");
 
 			while (rs.next()) {
-				maxCode = rs.getInt("codigo");
+				maxNumber = rs.getInt("numero");
 			}
 
-			if (maxCode == -1)
+			if (maxNumber == -1)
 				return;
 
-			maxCode++;
-			String query = String.format("INSERT INTO alumnos VALUES(%d,'%s','%s',%d,%d)", maxCode, name, lastname,
-			height, classroom);
+			maxNumber++;
+			String query = String.format("INSERT INTO aulas VALUES(%d,'%s',%d)", maxNumber, name, positions);
 
-			System.out.println("Query: "+query);
-			st.executeQuery(query);
+			System.out.println("Query: " + query);
+			int res = st.executeUpdate(query);
+			System.out.println(res == 1 ? "Aula inserted successfully" : "Aula not inserted");
 
-			System.out.println(maxCode);
+		} catch (Exception e) {
+			System.out.println("Error executing SQlite query" + e.getMessage());
+		}
+	}
 
+	public static void sqlite6(int number, String name, int positions) {
+		try {
+			Statement st = sqLite.conexion.createStatement();
+
+			String query = String.format(
+					"INSERT INTO aulas VALUES(IFNULL(%d,numero),IFNULL(%s,nombreAula),IFNULL(%d,puestos))", number,
+					name, positions);
+
+			System.out.println("Query: " + query);
+
+			int res = st.executeUpdate(query);
+
+			System.out.println(res == 1 ? "Aula modified successfully" : "Aula not modified");
 		} catch (Exception e) {
 			System.out.println("Error executing SQlite query" + e.getMessage());
 		}
@@ -518,7 +537,8 @@ public class Exercises {
 
 			// sqlite3();
 			// sqlite4(34);
-			sqlite5("Gabriel", "Otero", 184, 20);
+			// sqlite5("Programacion", 25);
+			sqlite6(34,"Programacion", 2);
 
 		}
 
