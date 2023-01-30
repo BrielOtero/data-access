@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Savepoint;
 import java.sql.Statement;
 import java.util.Enumeration;
 
@@ -486,7 +487,7 @@ public class Exercises {
 			Statement st = sqLite.conexion.createStatement();
 
 			String query = String.format(
-					"INSERT INTO aulas VALUES(IFNULL(%d,numero),IFNULL(%s,nombreAula),IFNULL(%d,puestos))", number,
+					"REPLACE INTO aulas VALUES(%d,'%s',%d)", number,
 					name, positions);
 
 			System.out.println("Query: " + query);
@@ -496,6 +497,84 @@ public class Exercises {
 			System.out.println(res == 1 ? "Aula modified successfully" : "Aula not modified");
 		} catch (Exception e) {
 			System.out.println("Error executing SQlite query" + e.getMessage());
+		}
+	}
+
+	public static void sqlite7(Student student) {
+		try {
+			String query = String.format(
+					"INSERT INTO alumnos (nombre,apellidos,altura,aula) VALUES (\"%s\",\"%s\",%d,%d)",
+					student.nombre, student.apellidos, student.altura, student.aula);
+
+			int resSQL = connectors.executeUpdate(query);
+
+			System.out.println(resSQL == 1 ? "Alumno inserted on SQL" : "Alumno not inserted in SQL");
+
+			Statement st = sqLite.conexion.createStatement();
+
+			int resSQLite = st.executeUpdate(query);
+
+			System.out.println(resSQLite == 1 ? "Alumno inserted on SQLite" : "Alumno not inserted in SQLite");
+
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+	}
+
+	public static void sqlite8(String searchName) {
+		try {
+			String query = " Select * from aulas where nombreAula like '%" + searchName + "%'";
+
+			ResultSet resSQL = connectors.executeQuery(query);
+
+			System.out.println(String.format("%6s || %12s || %6s", "Numero", "NombreAula", "Puestos"));
+
+			while (resSQL.next()) {
+				System.out.println(String.format("%6d || %12s || %6d", resSQL.getInt("numero"),
+						resSQL.getString("nombreAula"), resSQL.getInt("puestos")));
+			}
+
+			System.out.println();
+
+			System.out.println(String.format("%6s || %12s || %6s", "Numero", "NombreAula", "Puestos"));
+
+			ResultSet resSQLite = sqLite.conexion.createStatement().executeQuery(query);
+
+			while (resSQLite.next()) {
+				System.out.println(String.format("%6d || %12s || %6d", resSQLite.getInt("numero"),
+						resSQLite.getString("nombreAula"), resSQLite.getInt("puestos")));
+			}
+
+			// sqlite con like diferencia entre acentuar
+
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+	}
+
+	public static void sqlite9(Student student) {
+		try {
+			String query = String.format(
+					"INSERT INTO alumnos (nombre,apellidos,altura,aula) VALUES (\"%s\",\"%s\",%d,%d)",
+					student.nombre, student.apellidos, student.altura, student.aula);
+
+			// Savepoint = connectors.conexion.set;
+			
+			int resSQL = connectors.executeUpdate(query);
+
+			if(resSQL==0){
+				connectors.conexion.rollback(null);
+			}
+			System.out.println(resSQL == 1 ? "Alumno inserted on SQL" : "Alumno not inserted in SQL");
+
+			Statement st = sqLite.conexion.createStatement();
+
+			int resSQLite = st.executeUpdate(query);
+
+			System.out.println(resSQLite == 1 ? "Alumno inserted on SQLite" : "Alumno not inserted in SQLite");
+
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
 		}
 	}
 
@@ -538,7 +617,9 @@ public class Exercises {
 			// sqlite3();
 			// sqlite4(34);
 			// sqlite5("Programacion", 25);
-			sqlite6(34,"Programacion", 2);
+			// sqlite6(34, "Programacion", 2);
+			// sqlite7(new Student("Manuel","Marín",185,21));
+			sqlite8("í");
 
 		}
 
