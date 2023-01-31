@@ -8,6 +8,8 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.Enumeration;
 
 public class Exercises {
@@ -553,29 +555,105 @@ public class Exercises {
 	}
 
 	public static void sqlite9(Student student) {
+		Savepoint saveSQLite;
+		Savepoint saveSQL;
+		Statement stSQLite;
 		try {
 			String query = String.format(
 					"INSERT INTO alumnos (nombre,apellidos,altura,aula) VALUES (\"%s\",\"%s\",%d,%d)",
 					student.nombre, student.apellidos, student.altura, student.aula);
 
-			// Savepoint = connectors.conexion.set;
-			
+			saveSQL = connectors.conexion.setSavepoint();
+
 			int resSQL = connectors.executeUpdate(query);
 
-			if(resSQL==0){
-				connectors.conexion.rollback(null);
-			}
 			System.out.println(resSQL == 1 ? "Alumno inserted on SQL" : "Alumno not inserted in SQL");
+
+			if (resSQL != 1) {
+				connectors.conexion.rollback(saveSQL);
+				return;
+			}
+
+			stSQLite = sqLite.conexion.createStatement();
+
+			saveSQLite = sqLite.conexion.setSavepoint();
+
+			int resSQLite = stSQLite.executeUpdate(query);
+
+			System.out.println(resSQLite == 1 ? "Alumno inserted on SQLite" : "Alumno not inserted in SQLite");
+
+			if (resSQLite != 1) {
+				connectors.conexion.rollback(saveSQL);
+				sqLite.conexion.rollback(saveSQLite);
+				System.out.println("Alumno removed in SQL");
+			} else {
+				connectors.conexion.commit();
+				sqLite.conexion.commit();
+			}
+
+		} catch (Exception e) {
+
+			System.err.println(e.getMessage());
+		}
+	}
+
+	private static void sqlite10_A(String name, String date) {
+		try {
+
+			String query = String.format("INSERT INTO fechas (nombre,fecha)  VALUES (\"%s\",\"%s\")", name, date);
+
+			int resSQL = connectors.executeUpdate(query);
+
+			System.out.println(resSQL == 1 ? "Fecha inserted on SQL" : "Fecha not inserted in SQL");
 
 			Statement st = sqLite.conexion.createStatement();
 
 			int resSQLite = st.executeUpdate(query);
 
-			System.out.println(resSQLite == 1 ? "Alumno inserted on SQLite" : "Alumno not inserted in SQLite");
+			System.out.println(resSQLite == 1 ? "Fecha inserted on SQLite" : "Fecha not inserted in SQLite");
 
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}
+
+	}
+
+	private static void sqlite10_B(String name, String date) {
+		//Sin el parametro el sql trunca
+		sqlite10_A(name, date);
+	}
+
+	private static void sqlite10_C(String name, String date) {
+		//Inserted
+		sqlite10_A(name, date);
+	}
+
+	private static void sqlite10_D(String name) {
+		//SQLite mete UTC , SQL mete utc pero muestra la actual del sistema
+		try {
+
+			String querySQL = String.format("INSERT INTO fechas (nombre,fecha)  VALUES (\"%s\",NOW())", name);
+
+			int resSQL = connectors.executeUpdate(querySQL);
+
+			System.out.println(resSQL == 1 ? "Fecha inserted on SQL" : "Fecha not inserted in SQL");
+
+			String querySQLite = String.format("INSERT INTO fechas (nombre,fecha)  VALUES (\"%s\",DATETIME('now'))", name);
+
+			Statement st = sqLite.conexion.createStatement();
+
+			int resSQLite = st.executeUpdate(querySQLite);
+
+			System.out.println(resSQLite == 1 ? "Fecha inserted on SQLite" : "Fecha not inserted in SQLite");
+
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+	}
+
+	private static void sqlite10_E(String name) {
+		//SQLite mete una cadena vacia, SQL mete 0000-00-00 00:00:00
+		sqlite10_A(name, "");
 	}
 
 	public static void main(String[] args) {
@@ -619,7 +697,13 @@ public class Exercises {
 			// sqlite5("Programacion", 25);
 			// sqlite6(34, "Programacion", 2);
 			// sqlite7(new Student("Manuel","Marín",185,21));
-			sqlite8("í");
+			// sqlite8("í");
+			// sqlite9(new Student("Manuel","Marín",185,21));
+			// sqlite10_A("Test", LocalDate.now().toString());
+			// sqlite10_B("ABCDEFGHIJKLM", LocalDate.now().toString());
+			// sqlite10_C("ABCDEFGHIJKLM", LocalDate.now().toString());
+			sqlite10_D("Test10");
+			// sqlite10_E("ABCDEFGHIJKLM");
 
 		}
 

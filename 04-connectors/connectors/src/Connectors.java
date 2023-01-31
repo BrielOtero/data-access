@@ -10,13 +10,16 @@ public class Connectors {
 	public Connection conexion;
 
 	public Connectors() {
-		openConnection("add", "127.0.0.1", "root", "");
+
+		String parameterExercise10 = "?jdbcCompliantTruncation=false&zeroDateTimeBehavior=convertToNull";
+
+		openConnection("add", "127.0.0.1", "root", "", "");
 	}
 
 	public void openConnection(String bd, String servidor, String usuario,
-			String password) {
+			String password, String parameter) {
 		try {
-			String url = String.format("jdbc:mariadb://%s:3306/%s", servidor, bd);
+			String url = String.format("jdbc:mariadb://%s:3306/%s%s", servidor, bd, parameter);
 			// Establecemos la conexión con la BD
 			this.conexion = DriverManager.getConnection(url, usuario, password);
 			if (this.conexion != null) {
