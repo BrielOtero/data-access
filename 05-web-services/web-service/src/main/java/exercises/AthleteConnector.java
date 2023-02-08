@@ -11,19 +11,23 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class AthleteConnector {
-	Connection conexion;
+	public Connection conexion;
 
-	String bd = "athletesDB";
-	String server = "127.0.0.1";
-	String user = "root";
-	String password = "";
-
-	public AthleteConnector() {
-	}
+	private String bd = "athletesDB";
+	private String server = "127.0.0.1";
+	private String user = "root";
+	private String password = "";
 
 	private void openConnection() {
 
 		try {
+
+			try {
+				Class.forName("org.mariadb.jdbc.Driver");
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+
 			String url = String.format("jdbc:mariadb://%s:3306/%s", server, bd);
 			this.conexion = DriverManager.getConnection(url, user, password);
 
@@ -55,15 +59,55 @@ public class AthleteConnector {
 
 		try {
 			ResultSet res = executeQuery(query);
-
 			while (res.next()) {
 				athletes.add(new Athlete(res.getInt("id"), res.getString("name"), res.getString("sport"),
 						res.getBoolean("active"), res.getString("genre")));
 			}
+			System.out.println("Size: "+athletes.size());
 			return Response.ok(athletes).build();
 
 		} catch (Exception e) {
 			return Response.serverError().build();
 		}
+	}
+
+	public Connection getConexion() {
+		return conexion;
+	}
+
+	public void setConexion(Connection conexion) {
+		this.conexion = conexion;
+	}
+
+	public String getBd() {
+		return bd;
+	}
+
+	public void setBd(String bd) {
+		this.bd = bd;
+	}
+
+	public String getServer() {
+		return server;
+	}
+
+	public void setServer(String server) {
+		this.server = server;
+	}
+
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 }
