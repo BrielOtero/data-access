@@ -1,6 +1,5 @@
 package exercises;
 
-import jakarta.ws.rs.Path;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
