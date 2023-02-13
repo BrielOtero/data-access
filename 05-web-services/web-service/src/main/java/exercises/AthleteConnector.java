@@ -54,6 +54,17 @@ public class AthleteConnector {
 		return null;
 	}
 
+	public int executeUpdate(String query) {
+		openConnection();
+
+		try (Statement st = this.conexion.createStatement()) {
+			return st.executeUpdate(query);
+		} catch (Exception e) {
+			System.out.println("Error executing query");
+		}
+		return 0;
+	}
+
 	public Response select(String query) {
 		ArrayList<Athlete> athletes = new ArrayList<>();
 
@@ -63,8 +74,49 @@ public class AthleteConnector {
 				athletes.add(new Athlete(res.getInt("id"), res.getString("name"), res.getString("sport"),
 						res.getBoolean("active"), res.getString("genre")));
 			}
-			System.out.println("Size: "+athletes.size());
+			System.out.println("Size: " + athletes.size());
 			return Response.ok(athletes).build();
+
+		} catch (Exception e) {
+			return Response.serverError().build();
+		}
+	}
+
+	public Response selectSport(String query) {
+		ArrayList<String> sports = new ArrayList<>();
+
+		try {
+			ResultSet res = executeQuery(query);
+			while (res.next()) {
+				sports.add(res.getString("sport"));
+			}
+			System.out.println("Size: " + sports.size());
+			return Response.ok(sports).build();
+
+		} catch (Exception e) {
+			return Response.serverError().build();
+		}
+	}
+
+	public Response count(String query) {
+		try {
+			ResultSet res = executeQuery(query);
+			res.next();
+			return Response.ok(res.getInt("count")).build();
+
+		} catch (Exception e) {
+			return Response.serverError().build();
+		}
+	}
+
+	public Response insert(String query) {
+		try {
+			int res = executeUpdate(query);
+			if (res != 0) {
+				return Response.ok().build();
+			} else {
+				return Response.serverError().build();
+			}
 
 		} catch (Exception e) {
 			return Response.serverError().build();

@@ -1,8 +1,6 @@
-exercises\AthleteService$DebugExceptionMapper.class
-exercises\AthleteService.class
-exercises\Athlete.class
 exercises\Person.class
 exercises\PersonManagement.class
 exercises\Hello.class
 exercises\People.class
+exercises\Athlete.class
 exercises\AthleteConnector.class

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.GET;
@@ -56,7 +57,7 @@ public class People {
 
 	@POST
 	@Consumes("application/x-www-form-urlencoded")
-	@Produces({ MediaType.APPLICATION_JSON })
+	@Produces({ MediaType.APPLICATION_JSON,MediaType.APPLICATION_FORM_URLENCODED })
 	public Response getCarText(@FormParam("id") int id, @FormParam("name") String name, @FormParam("sex") String sex,
 			@FormParam("married") boolean married) {
 		return Response.ok(new Person(id, name, married, sex)).build();
@@ -71,7 +72,7 @@ public class People {
 		}
 	}
 
-	@POST
+	@DELETE
 	@Path("/del/{id}")
 	public void del(@PathParam("id") int id) {
 		people.removeIf(p -> p.getId() == id);
@@ -91,4 +92,11 @@ public class People {
 		Object[] o = people.stream().filter(p -> p.getId() == id).toArray();
 		return Response.ok(Arrays.copyOf(o, o.length, Person[].class)).build();
 	}
+
+	/*
+	 * Ejercicio 11 lo que tenemos que hacer es a las propiedades de person
+	 * cambiar los xml element
+	 * @XmlElement(name = "nuevaMarca")
+	 */
+
 }
