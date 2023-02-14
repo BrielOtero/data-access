@@ -109,7 +109,7 @@ public class AthleteConnector {
 		}
 	}
 
-	public Response insert(String query) {
+	public Response update(String query) {
 		try {
 			int res = executeUpdate(query);
 			if (res != 0) {
